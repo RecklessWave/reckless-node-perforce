@@ -1,13 +1,12 @@
 {
   "name": "reckless-node-perforce",
   "version": "0.0.1",
-  "description": "A simple library for perforce",
+  "description": "Simplified fork of node-perforce with vulnerable dependencies removed and fixed commands",
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/RecklessWave/reckless-node-perforce"
+    "url": "git+https://github.com/RecklessWave/reckless-node-perforce.git"
   },
   "keywords": [
     "perforce",
@@ -21,6 +20,5 @@
     "url": "https://github.com/RecklessWave/reckless-node-perforce/issues"
   },
   "homepage": "https://github.com/RecklessWave/reckless-node-perforce",
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
