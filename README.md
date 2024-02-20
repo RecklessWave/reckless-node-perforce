@@ -1,4 +1,4 @@
-node-perforce
+reckless-node-perforce
 =============
 
 A simple library for perforce
@@ -6,13 +6,13 @@ A simple library for perforce
 ## Install
 
 ```sh
-npm install node-perforce --save
+npm install reckless-node-perforce
 ```
 
 ## Example
 
 ```js
-var p4 = require('node-perforce');
+var p4 = require('reckless-node-perforce');
 
 // create a new changelist
 p4.changelist.create({description: 'hello world'}, function (err, changelist) {

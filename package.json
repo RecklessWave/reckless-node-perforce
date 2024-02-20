@@ -1,32 +1,27 @@
 {
-  "name": "node-perforce",
-  "version": "0.0.18",
+  "name": "reckless-node-perforce",
+  "version": "0.0.1",
   "description": "A simple library for perforce",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wokim/node-perforce"
+    "url": "https://github.com/RecklessWave/reckless-node-perforce"
   },
   "keywords": [
     "perforce",
     "p4",
     "node-perforce",
-    "node-p4"
+    "node-p4",
+    "reckless-node-perforce"
   ],
-  "author": "wokim <wonshikkim.kr@gmail.com>",
+  "author": "npm@recklesswave.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wokim/node-perforce/issues"
+    "url": "https://github.com/RecklessWave/reckless-node-perforce/issues"
   },
-  "homepage": "https://github.com/wokim/node-perforce",
-  "dependencies": {
-    "string": "^2.2.0"
-  },
+  "homepage": "https://github.com/RecklessWave/reckless-node-perforce",
   "devDependencies": {
-    "mocha": "^2.0.1",
-    "should": "^4.1.0"
   }
 }
