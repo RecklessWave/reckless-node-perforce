@@ -16,7 +16,6 @@
     "node-p4",
     "reckless-node-perforce"
   ],
-  "author": "npm@recklesswave.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/RecklessWave/reckless-node-perforce/issues"
