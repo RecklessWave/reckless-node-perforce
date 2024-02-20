@@ -1,6 +1,6 @@
 {
   "name": "reckless-node-perforce",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Simplified fork of node-perforce with vulnerable dependencies removed and fixed commands",
   "main": "index.js",
   "scripts": {},

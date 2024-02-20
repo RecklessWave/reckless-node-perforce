@@ -96,12 +96,21 @@ function execP4(p4cmd, options, callback)
     if (stderr) return callback(new Error(stderr));
     return callback(null, stdout);
   });
+
   if (ob.stdin.length > 0)
   {
     ob.stdin.forEach(function (line)
     {
-      child.stdin.write(line + '\n');
+      // for multi-line inputs, the first line goes in as is, and the following need to start with a tab
+      let multiline = line.split('\n')
+      child.stdin.write(multiline[0] + '\n');
+      multiline.shift();
+      multiline.forEach(function (theLine)
+      {
+        child.stdin.write('\t' + theLine + '\n');
+      });
     });
+
     child.stdin.end();
   }
 }
