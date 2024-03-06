@@ -385,6 +385,32 @@ NodeP4.prototype.users = function (options, callback)
   });
 };
 
+NodeP4.prototype.awaitCommand = function (command, options)
+{
+  return new Promise((resolve, reject) =>
+  {
+    this[command](options, (err, out) =>
+    {
+      // Error and output handling
+      if (err)
+      {
+        if (err.message && err.message.includes("file(s) up-to-date"))
+        {
+          resolve(err.message); // Not a real error, treat as success
+        }
+        else
+        {
+          reject(err); // Real error, reject the promise
+        }
+      }
+      else
+      {
+        resolve(out); // No errors, resolve with the actual output
+      }
+    });
+  });
+};
+
 var commonCommands = ['add', 'delete', 'edit', 'revert', 'sync', 'diff', 'reconcile', 'reopen', 'resolved',
                       'shelve', 'unshelve', 'client', 'resolve', 'submit', 'describe', 'files'];
 

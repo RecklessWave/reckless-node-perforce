@@ -58,3 +58,21 @@ p4.edit({files: ['*.js']}, function(err)
   if (err) return console.log(err);
 });
 ```
+
+## Now also supporting await syntax - example:
+
+```js
+
+var p4 = require('reckless-node-perforce');
+
+try
+{
+  // create a new changelist
+  let changelist = await awaitP4('changelist.create', {description: 'Hello world!'});
+  console.log(`Changelist is ${changelist}.`);
+}
+catch (err)
+{
+  return console.log(err);
+}
+```
