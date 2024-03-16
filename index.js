@@ -389,7 +389,15 @@ NodeP4.prototype.awaitCommand = function (command, options)
 {
   return new Promise((resolve, reject) =>
   {
-    this[command](options, (err, out) =>
+    let commandPointer = this;
+
+    if (command.includes('.'))
+    {
+      commandPointer = this[command.substring(0, command.indexOf('.'))];
+      command = command.substring(command.indexOf('.') + 1);
+    }
+
+    commandPointer[command](options, (err, out) =>
     {
       // Error and output handling
       if (err)
