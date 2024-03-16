@@ -68,7 +68,7 @@ var p4 = require('reckless-node-perforce');
 try
 {
   // create a new changelist
-  let changelist = await awaitP4('changelist.create', {description: 'Hello world!'});
+  let changelist = await p4.awaitCommand('changelist.create', {description: 'Hello world!'});
   console.log(`Changelist is ${changelist}.`);
 }
 catch (err)
