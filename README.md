@@ -9,7 +9,7 @@ A simplified fork of node-perforce with vulnerable dependencies removed and fixe
 npm install reckless-node-perforce
 ```
 
-## Example
+## Examples using callback syntax:
 
 ```js
 var p4 = require('reckless-node-perforce');
@@ -21,48 +21,16 @@ p4.changelist.create({description: 'hello world'}, function (err, changelist)
   console.log('changelist:', changelist);
 });
 
-// view changelist info
-p4.changelist.view({changelist: changelist}, function (err, view)
-{
-  if (err) return console.log(err);
-  console.log(view);
-});
-
-// edit changelist 1234
-p4.changelist.edit({changelist: 1234, description: 'hi world'}, function (err)
-{
-  if (err) return console.log(err);
-});
-
-// delete changelist 1234
-p4.changelist.delete({changelist: 1234}, function (err)
-{
-  if (err) return console.log(err);
-});
-
-// add files into CL@1234
-p4.add({changelist: 1234, filetype: 'binary', files: ['*.bin']}, function(err)
-{
-  if (err) return console.log(err);
-});
-
 // revert files
 p4.revert({files: ['*.bin']}, function(err)
 {
   if (err) return console.log(err);
 });
-
-// edit files
-p4.edit({files: ['*.js']}, function(err)
-{
-  if (err) return console.log(err);
-});
 ```
 
-## Now also supporting await syntax - example:
+## Now also supporting simpler await syntax - more examples:
 
 ```js
-
 var p4 = require('reckless-node-perforce');
 
 try
@@ -70,9 +38,67 @@ try
   // create a new changelist
   let changelist = await p4.awaitCommand('changelist.create', {description: 'Hello world!'});
   console.log(`Changelist is ${changelist}.`);
+
+  // view changelist info
+  let info = await p4.awaitCommand('changelist.view', {changelist: changelist});
+
+  // edit changelist 1234
+  let editResult = await p4.awaitCommand('changelist.edit', {changelist: 1234, description: 'Hello world'});
+
+  // delete changelist 1234
+  let deleteResult = await p4.awaitCommand('changelist.delete', {changelist: 1234});
+
+  // add files to changelist 1234
+  let addResult = await p4.awaitCommand('add', {changelist: 1234, filetype: 'binary', files: ['*.bin']});
+
+  // check out files
+  let editResult = await p4.awaitCommand('edit', {files: ['*.js']});
 }
 catch (err)
 {
   return console.log(err);
 }
+```
+
+## Important note: to understand how to construct standard Perforce commands using this library's syntax, look
+## at the option translations listed in p4options.js file. Below, I have taken those options and demonstrated
+## the appropriate syntax to use in this library to add them as parameters to your Perforce commands.
+## Unary options (no value needed) should simply have a value of true when you pass them. Other options show
+## the value type that is expected, e.g. changelists are expected to be provided as Numbers, not Strings.
+
+```
+-am: {acceptmerged: true}
+ -d: {delete: true}
+ -c: {changelist: NumberValue}
+ -s: {shelved: NumberValue}
+ -S: {stream: StringValue}
+ -t: {filetype: StringValue}
+ -f: {force: true}
+ -s: {switch: true}
+ -a: {unchanged: true}
+ -m: {max: NumberValue}
+ -c: {client: StringValue}
+ -l: {long: true}
+ -L: {trunk: true}
+ -s: {status: StringValue}
+ -t: {time: true}
+ -u: {user: StringValue}
+ '': {custom: StringValue}      (any provided string will be appended to the initial command)
+     {files: [StringValues]}    (provided array of file paths as string values will be used for the command)
+     {description: StringValue} (description will be inserted for the new or edited changelist using stdin)
+```
+
+## Debugging:
+
+A debug option has been added to make it easier to see what commands are being run. To use it, simply call
+p4.setDebugMode(true) after requiring the library. You will see debug info logged to console in this format:
+
+```
+[P4 DEBUG] p4.exe edit -c 109 -t text //depot/MyFileName.json
+```
+
+```js
+var p4 = require('reckless-node-perforce');
+
+p4.setDebugMode(true);
 ```

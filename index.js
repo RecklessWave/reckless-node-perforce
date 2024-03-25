@@ -27,10 +27,18 @@ function optionBuilder(options)
   Object.keys(options).map(function (option)
   {
     var p4option = p4options[option];
+
     if (!p4option) return;
     if (p4option.category !== 'unary')
     {
-      if ((options[option] || {}).constructor !== p4option.type) return;
+      if ((options[option] || {}).constructor !== p4option.type)
+      {
+        if (NodeP4.debug_mode)
+        {
+          console.log(`[P4 DEBUG] Rejected option parameter due to wrong argument type! Option ${option}, parameter value was ${options[option]}, required type was ${p4option.type.name}.`);
+        }
+        return;
+      }
     }
     if (p4option.category === 'stdin')
     {
@@ -90,6 +98,12 @@ function execP4(p4cmd, options, callback)
   var ob = optionBuilder(options);
   var childProcessOptions = execOptionBuilder(options);
   var cmd = [p4, p4cmd, ob.args.join(' '), ob.files.join(' ')];
+
+  if (NodeP4.debug_mode)
+  {
+    console.log('[P4 DEBUG] ' + cmd.join(' '));
+  }
+  
   var child = exec(cmd.join(' '), childProcessOptions, function (err, stdout, stderr)
   {
     if (err) return callback(err);
@@ -104,10 +118,21 @@ function execP4(p4cmd, options, callback)
       // for multi-line inputs, the first line goes in as is, and the following need to start with a tab
       let multiline = line.split('\n')
       child.stdin.write(multiline[0] + '\n');
+
+      if (NodeP4.debug_mode)
+      {
+        console.log("     > " + multiline[0]);
+      }
+
       multiline.shift();
       multiline.forEach(function (theLine)
       {
         child.stdin.write('\t' + theLine + '\n');
+
+        if (NodeP4.debug_mode)
+        {
+          console.log('     >      ' + theLine);
+        }
       });
     });
 
@@ -417,6 +442,13 @@ NodeP4.prototype.awaitCommand = function (command, options)
       }
     });
   });
+};
+
+NodeP4.prototype.setDebugMode = function (debug_active)
+{
+  // change static property so that we can access it inside nested function defs like changelist.create,
+  // where we can't easily get an instance property using the 'this' variable since the context is nested
+  NodeP4.debug_mode = debug_active;
 };
 
 var commonCommands = ['add', 'delete', 'edit', 'revert', 'sync', 'diff', 'reconcile', 'reopen', 'resolved',
