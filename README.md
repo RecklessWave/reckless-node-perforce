@@ -60,11 +60,10 @@ catch (err)
 }
 ```
 
-## Important note: to understand how to construct standard Perforce commands using this library's syntax, look
-## at the option translations listed in p4options.js file. Below, I have taken those options and demonstrated
-## the appropriate syntax to use in this library to add them as parameters to your Perforce commands.
-## Unary options (no value needed) should simply have a value of true when you pass them. Other options show
-## the value type that is expected, e.g. changelists are expected to be provided as Numbers, not Strings.
+## Important note: to understand how to construct standard Perforce commands using this library's syntax, look at the option translations listed in p4options.js file. Below, I have taken those options and demonstrated the appropriate syntax to use in this library to add them as parameters to your Perforce commands.
+
+Unary options (no value needed) should simply have a value of true when you pass them.
+Other options show the value type that is expected, e.g. changelists are expected to be provided as Numbers, not Strings.
 
 ```
 -am: {acceptmerged: true}
@@ -90,8 +89,7 @@ catch (err)
 
 ## Debugging:
 
-A debug option has been added to make it easier to see what commands are being run. To use it, simply call
-p4.setDebugMode(true) after requiring the library. You will see debug info logged to console in this format:
+A debug option has been added to make it easier to see what commands are being run. To use it, simply call p4.setDebugMode(true) after requiring the library. You will see debug info logged to console in this format:
 
 ```
 [P4 DEBUG] p4.exe edit -c 109 -t text //depot/MyFileName.json
