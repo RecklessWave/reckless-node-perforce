@@ -41,7 +41,7 @@ module.exports = {
   },
   _delete: {
     cmd: '-d',
-    type: String,
+    type: Number,
     category: 'mixed'
   },
   _output: {
