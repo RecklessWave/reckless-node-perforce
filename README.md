@@ -43,13 +43,14 @@ try
   let info = await p4.awaitCommand('changelist.view', {changelist: changelist});
 
   // edit changelist 1234
-  let editResult = await p4.awaitCommand('changelist.edit', {changelist: 1234, description: 'Hello world'});
+  let editResult = await p4.awaitCommand('changelist.edit', {changelist: 1234, description: 'Hi'});
 
   // delete changelist 1234
   let deleteResult = await p4.awaitCommand('changelist.delete', {changelist: 1234});
 
   // add files to changelist 1234
-  let addResult = await p4.awaitCommand('add', {changelist: 1234, filetype: 'binary', files: ['*.bin']});
+  let addResult = await p4.awaitCommand('add', {
+    changelist: 1234, filetype: 'binary', files: ['*.bin']});
 
   // check out files
   let editResult = await p4.awaitCommand('edit', {files: ['*.js']});
@@ -84,8 +85,8 @@ Unary options (no value needed) should simply have a value of true when you pass
  -t: {time: true}
  -u: {user: StringValue}
  '': {custom: StringValue}      (any provided string will be appended to the initial command)
-     {files: [StringValues]}    (provided array of file paths as string values will be used for the command)
-     {description: StringValue} (description will be inserted for the new or edited changelist using stdin)
+     {files: [StringValues]}    (provided array of file paths as strings will be used)
+     {description: StringValue} (description is inserted for the new/edited changelist with stdin)
 ```
 
 ## Debugging:
@@ -96,7 +97,7 @@ A debug option has been added to make it easier to see what commands are being r
 [P4 DEBUG] p4.exe edit -c 109 -t text //depot/MyFileName.json
 ```
 
-To use it, simply call `p4.setDebugMode(true)` after requiring the library. You will see debug info logged to console in this format:
+To use it, simply call `p4.setDebugMode(true)` after requiring the library:
 
 ```js
 var p4 = require('reckless-node-perforce');
