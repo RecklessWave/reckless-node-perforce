@@ -339,7 +339,7 @@ NodeP4.prototype.fstat = function (options, callback)
 
     callback(null, result);
   });
-}
+};
 
 NodeP4.prototype.changes = function (options, callback)
 {
@@ -358,7 +358,14 @@ NodeP4.prototype.changes = function (options, callback)
     result = stdout.trim().split(/\r\n\r\n|\n\n(?=\.\.\.)/).reduce(function (memo, changeinfo)
     {
       // process each line of change info, transforming into a hash
-      memo.push(processZtagOutput(changeinfo));
+      var item = processZtagOutput(changeinfo);
+
+      // If object representing change is not empty, push it onto array
+      if (Object.keys(item).length != 0)
+      {
+        memo.push(item);
+      }
+
       return memo;
     }, []);
 
@@ -410,6 +417,37 @@ NodeP4.prototype.users = function (options, callback)
   });
 };
 
+NodeP4.prototype.diff2 = function (options, callback)
+{
+  if (typeof options === 'function')
+  {
+    callback = options;
+    options = undefined;
+  }
+
+  // TODO: Check that no more than two file arguments are provided
+  execP4('-ztag diff2', options, function (err, stdout)
+  {
+    var result;
+    if (err) return callback(err);
+
+    // process each change
+    result = stdout.trim().split(/\r\n\r\n|\n\n(?=\.\.\.)/).reduce(function (memo, diff2info)
+    {
+      // process each line of change info, transforming into a hash
+      var item = processZtagOutput(diff2info);
+
+      // If object representing change is not empty, push it onto array
+      if (Object.keys(item).length != 0)
+        memo.push(item);
+
+      return memo;
+    }, []);
+
+    callback(null, result);
+  });
+};
+
 NodeP4.prototype.awaitCommand = function (command, options)
 {
   return new Promise((resolve, reject) =>
@@ -452,7 +490,7 @@ NodeP4.prototype.setDebugMode = function (debug_active)
 };
 
 var commonCommands = ['add', 'delete', 'edit', 'revert', 'sync', 'diff', 'reconcile', 'reopen', 'resolved',
-                      'shelve', 'unshelve', 'client', 'resolve', 'submit', 'describe', 'files'];
+                      'shelve', 'unshelve', 'client', 'resolve', 'submit', 'describe', 'files', 'have'];
 
 commonCommands.forEach(function (command)
 {
