@@ -52,15 +52,6 @@ function optionBuilder(options)
     }
     else
     {
-      // Enclose file params in single quotes if not currently enclosed with quotes
-      for (let element of options[option])
-      {
-        element = element.trim();
-        if (!element.startsWith("'") && !element.startsWith('"'))
-        {
-          element = `'${element}'`;
-        }
-      }
       results.files = results.files.concat(options[option]);
     }
   });
