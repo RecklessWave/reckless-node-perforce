@@ -37,13 +37,14 @@ function optionBuilder(options)
         {
           console.log(`[P4 DEBUG] Rejected option parameter due to wrong argument type! Option ${option}, parameter value was ${options[option]}, required type was ${p4option.type.name}.`);
         }
+        throw new Error(`[Perforce] Rejected option parameter due to wrong argument type! Option ${option}, parameter value was ${options[option]}, required type was ${p4option.type.name}.`);
         return;
       }
     }
     if (p4option.category === 'stdin')
     {
       results.stdin.push(p4option.cmd + options[option]);
-      if (results.args.indexOf('-i') < 0) results.args.push('-i');
+      if (results.args.indexOf('-i') < 0 && !p4option.omit_i) results.args.push('-i');
     }
     else if (p4option.cmd)
     {
@@ -490,7 +491,7 @@ NodeP4.prototype.setDebugMode = function (debug_active)
 };
 
 var commonCommands = ['add', 'delete', 'edit', 'revert', 'sync', 'diff', 'reconcile', 'reopen', 'resolved',
-                      'shelve', 'unshelve', 'client', 'resolve', 'submit', 'describe', 'files', 'have'];
+                      'shelve', 'unshelve', 'client', 'resolve', 'submit', 'describe', 'files', 'have', 'login', 'logout'];
 
 commonCommands.forEach(function (command)
 {

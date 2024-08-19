@@ -6,6 +6,12 @@ module.exports = {
     type: String,
     category: 'stdin'
   },
+  password: {
+    cmd: '',
+    type: String,
+    category: 'stdin',
+    omit_i: true
+  },
   description: {
     cmd: 'Description:',
     type: String,
