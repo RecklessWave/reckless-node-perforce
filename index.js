@@ -120,7 +120,7 @@ function execP4(p4cmd, options, callback)
       let multiline = line.split('\n')
       child.stdin.write(multiline[0] + '\n');
 
-      if (NodeP4.debug_mode)
+      if (NodeP4.debug_mode && p4cmd.toLowerCase() != 'login')
       {
         console.log("     > " + multiline[0]);
       }
@@ -130,7 +130,7 @@ function execP4(p4cmd, options, callback)
       {
         child.stdin.write('\t' + theLine + '\n');
 
-        if (NodeP4.debug_mode)
+        if (NodeP4.debug_mode && p4cmd.toLowerCase() != 'login')
         {
           console.log('     >      ' + theLine);
         }
