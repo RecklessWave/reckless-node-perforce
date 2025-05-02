@@ -98,6 +98,10 @@ function execP4(p4cmd, options, callback)
 
   var ob = optionBuilder(options);
   var childProcessOptions = execOptionBuilder(options);
+
+  // 50MB buffer max
+  childProcessOptions.maxBuffer = options && options.maxBuffer ? options.maxBuffer : 50 * 1024 * 1024;
+
   var cmd = [p4, p4cmd, ob.args.join(' '), ob.files.join(' ')];
 
   if (NodeP4.debug_mode)
