@@ -99,9 +99,6 @@ function execP4(p4cmd, options, callback)
   var ob = optionBuilder(options);
   var childProcessOptions = execOptionBuilder(options);
 
-  // 50MB buffer max
-  childProcessOptions.maxBuffer = options && options.maxBuffer ? options.maxBuffer : 50 * 1024 * 1024;
-
   var cmd = [p4, p4cmd, ob.args.join(' '), ob.files.join(' ')];
 
   if (NodeP4.debug_mode)
@@ -115,14 +112,27 @@ function execP4(p4cmd, options, callback)
   const argv = [p4cmd, ...flatArgs, ...flatFiles].filter(Boolean);
 
   // use spawn to avoid buffer size issues
-  var child = spawn(p4, argv, childProcessOptions);
+  var child = spawn(p4, argv, { ...childProcessOptions, shell: true });
 
   let stdout = '', stderr = '';
   child.stdout.on('data', d => { stdout += d; });
   child.stderr.on('data', d => { stderr += d; });
+
+  child.on('error', (err) =>
+  {
+    // Handle spawn errors (like command not found)
+    callback(err);
+  });
+
   child.on('close', code =>
   {
-    if (code !== 0) return callback(new Error(stderr));
+    // For p4 info and some other commands, we want to return stdout even if
+    // the exit code is non-zero, as it often contains useful information
+    if (code !== 0)
+    {
+      // We'll still pass the stderr as an error property
+      return callback(null, stdout, {error: stderr, code: code});
+    }
     return callback(null, stdout);
   });
 
