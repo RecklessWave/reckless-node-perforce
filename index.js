@@ -109,7 +109,14 @@ function execP4(p4cmd, options, callback)
     console.log('[P4 DEBUG] ' + cmd.join(' '));
   }
   
-  var child = spawn( p4, [p4cmd].concat(ob.args).concat(ob.files), childProcessOptions );
+  // flatten both flags _and_ file‐spec strings, then drop blanks
+  const flatArgs = ob.args.reduce((a, s) => a.concat(String(s).split(/\s+/)), []);
+  const flatFiles = ob.files.reduce((a, s) => a.concat(String(s).split(/\s+/)), []);
+  const argv = [p4cmd, ...flatArgs, ...flatFiles].filter(Boolean);
+
+  // use spawn to avoid buffer size issues
+  var child = spawn(p4, argv, childProcessOptions);
+
   let stdout = '', stderr = '';
   child.stdout.on('data', d => { stdout += d; });
   child.stderr.on('data', d => { stderr += d; });
