@@ -1,7 +1,7 @@
 'use strict';
 
 var os = require('os');
-var exec = require('child_process').exec;
+const { exec, spawn } = require('child_process');
 var p4options = require('./p4options');
 const { stdout } = require('process');
 var ztagRegex = /^\.\.\.\s+(\w+)\s+(.+)/;
@@ -109,10 +109,13 @@ function execP4(p4cmd, options, callback)
     console.log('[P4 DEBUG] ' + cmd.join(' '));
   }
   
-  var child = exec(cmd.join(' '), childProcessOptions, function (err, stdout, stderr)
+  var child = spawn(cmd.join(' '), { shell: true, ...childProcessOptions });
+  let stdout = '', stderr = '';
+  child.stdout.on('data', d => { stdout += d; });
+  child.stderr.on('data', d => { stderr += d; });
+  child.on('close', code =>
   {
-    if (err) return callback(err);
-    if (stderr) return callback(new Error(stderr));
+    if (code !== 0) return callback(new Error(stderr));
     return callback(null, stdout);
   });
 
