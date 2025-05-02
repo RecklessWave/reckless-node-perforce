@@ -109,7 +109,7 @@ function execP4(p4cmd, options, callback)
     console.log('[P4 DEBUG] ' + cmd.join(' '));
   }
   
-  var child = spawn(cmd.join(' '), { shell: true, ...childProcessOptions });
+  var child = spawn( p4, [p4cmd].concat(ob.args).concat(ob.files), childProcessOptions );
   let stdout = '', stderr = '';
   child.stdout.on('data', d => { stdout += d; });
   child.stderr.on('data', d => { stderr += d; });
