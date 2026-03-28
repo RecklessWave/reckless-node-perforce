@@ -193,17 +193,25 @@ NodeP4.prototype.changelist =
       callback = options;
       options = undefined;
     }
+
     var newOptions =
     {
       _change: 'new',
       description: options.description || '<saved by node-perforce>'
     };
-    execP4('change', newOptions, function (err, stdout)
+
+    execP4('change', newOptions, function (err, stdout, procErr)
     {
       if (err) return callback(err);
-      var matched = stdout.match(/([0-9]+)/g);
-      if (matched.length > 0) return callback(null, parseInt(matched[0], 10));
-      else return callback(new Error('Unknown error'));
+
+      const matched = stdout ? stdout.match(/([0-9]+)/g) : null;
+      if (matched && matched.length > 0)
+      {
+        return callback(null, parseInt(matched[0], 10));
+      }
+
+      const details = procErr?.error || stdout || "No stdout or stderr returned from p4 change -i.";
+      return callback(new Error("Failed to create changelist. " + details));
     });
   },
 
@@ -287,6 +295,7 @@ NodeP4.prototype.changelist =
     execP4('submit', options, function (err, stdout)
     {
       if (err) return callback(err);
+      return callback(null, stdout);
     });
   }
 };
