@@ -68,7 +68,6 @@ function execOptionBuilder(options)
     cwd: true,
     env: true,
     encoding: true,
-    shell: true,
     timeout: true,
     maxBuffer: true,
     killSignal: true,
@@ -112,7 +111,7 @@ function execP4(p4cmd, options, callback)
   const argv = [p4cmd, ...flatArgs, ...flatFiles].filter(Boolean);
 
   // use spawn to avoid buffer size issues
-  var child = spawn(p4, argv, { ...childProcessOptions, shell: true });
+  var child = spawn(p4, argv, childProcessOptions);
 
   let stdout = '', stderr = '';
   child.stdout.on('data', d => { stdout += d; });
@@ -130,8 +129,12 @@ function execP4(p4cmd, options, callback)
     // the exit code is non-zero, as it often contains useful information
     if (code !== 0)
     {
-      // We'll still pass the stderr as an error property
-      return callback(null, stdout, {error: stderr, code: code});
+      const message = stderr || stdout || `p4 ${p4cmd} failed with exit code ${code}`;
+      const err = new Error(message.trim());
+      err.code = code;
+      err.stderr = stderr;
+      err.stdout = stdout;
+      return callback(err);
     }
     return callback(null, stdout);
   });

@@ -1,9 +1,11 @@
 {
   "name": "reckless-node-perforce",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Simplified fork of node-perforce with vulnerable dependencies removed and fixed commands",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "node test/spawn.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/RecklessWave/reckless-node-perforce.git"
