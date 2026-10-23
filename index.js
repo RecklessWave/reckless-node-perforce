@@ -48,8 +48,19 @@ function optionBuilder(options)
     }
     else if (p4option.cmd)
     {
-      results.args.push(p4option.cmd);
-      if (p4option.category === 'mixed') results.args.push(options[option]);
+      if (option === 'custom')
+      {
+        // Only custom is a whitespace-separated list of flags; structured values stay intact.
+        results.args.push(...options[option].split(/\s+/).filter(Boolean));
+      }
+      else
+      {
+        results.args.push(p4option.cmd);
+        if (p4option.category === 'mixed')
+        {
+          results.args.push(String(options[option]));
+        }
+      }
     }
     else
     {
@@ -105,10 +116,8 @@ function execP4(p4cmd, options, callback)
     console.log('[P4 DEBUG] ' + cmd.join(' '));
   }
   
-  // flatten both flags _and_ file‐spec strings, then drop blanks
-  const flatArgs = ob.args.reduce((a, s) => a.concat(String(s).split(/\s+/)), []);
-  const flatFiles = ob.files.reduce((a, s) => a.concat(String(s).split(/\s+/)), []);
-  const argv = [p4cmd, ...flatArgs, ...flatFiles].filter(Boolean);
+  // Internal commands may include -ztag; file paths and structured option values are single arguments.
+  const argv = [...p4cmd.split(/\s+/).filter(Boolean), ...ob.args, ...ob.files.map(String)];
 
   // use spawn to avoid buffer size issues
   var child = spawn(p4, argv, childProcessOptions);
